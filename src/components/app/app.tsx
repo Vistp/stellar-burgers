@@ -12,18 +12,23 @@ import {
 } from '@pages';
 import { Preloader } from '@ui';
 import { Routes, Route, useLocation } from 'react-router-dom';
-
 import type { AppContentProps } from './type';
-import type { TIngredient } from '@utils-types';
-
 import '../../index.css';
-
 import styles from './app.module.css';
+import { useDispatch, useSelector } from '@/services/store';
+import { useEffect } from 'react';
+import { getIngredientsError, getIngredientsLoading, getIngredientsState, getIngredientsThunk } from '@/services/slices/ingredientsSlice';
 
 const App = (): React.JSX.Element => {
-  const ingredients: TIngredient[] = [];
-  const isIngredientsLoading = false;
-  const ingredientsError = null;
+  const dispatch = useDispatch();
+
+  const ingredients = useSelector(getIngredientsState);
+  const isIngredientsLoading = useSelector(getIngredientsLoading);
+  const ingredientsError = useSelector(getIngredientsError);
+
+  useEffect(() => {
+    dispatch(getIngredientsThunk());
+  }, [dispatch]);
 
   return (
     <div className={styles.app}>
@@ -31,7 +36,7 @@ const App = (): React.JSX.Element => {
       <AppContent
         ingredients={ingredients}
         isLoading={isIngredientsLoading}
-        error={ingredientsError}
+        error={ingredientsError ? new Error(ingredientsError) : null}
       />
     </div>
   );
