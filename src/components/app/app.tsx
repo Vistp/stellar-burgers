@@ -18,6 +18,7 @@ import styles from './app.module.css';
 import { useDispatch, useSelector } from '@/services/store';
 import { useEffect } from 'react';
 import { getIngredientsError, getIngredientsLoading, getIngredientsState, getIngredientsThunk } from '@/services/slices/ingredientsSlice';
+import { checkUserAuthThunk } from '@/services/slices/userSlice';
 
 const App = (): React.JSX.Element => {
   const dispatch = useDispatch();
@@ -28,6 +29,7 @@ const App = (): React.JSX.Element => {
 
   useEffect(() => {
     dispatch(getIngredientsThunk());
+    dispatch(checkUserAuthThunk());
   }, [dispatch]);
 
   return (
