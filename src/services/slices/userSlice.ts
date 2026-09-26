@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getUserApi, loginUserApi, logoutApi, registerUserApi, updateUserApi, type TLoginData, type TRegisterData } from '../../utils/burger-api';
-import type { TUser } from '../../utils/types';
+import { getOrdersApi, getUserApi, loginUserApi, logoutApi, registerUserApi, updateUserApi, type TLoginData, type TRegisterData } from '../../utils/burger-api';
+import type { TOrder, TUser } from '../../utils/types';
 import type { RootState } from '../store';
 import { deleteCookie, setCookie } from '@/utils/cookie';
 
@@ -52,6 +52,12 @@ export const logoutUserThunk = createAsyncThunk(
     })
 );
 
+/** Получает историю заказов пользователя */
+export const loadUserOrdersThunk = createAsyncThunk(
+  'user/fetchOrders',
+  () => getOrdersApi().then((res) => res)
+);
+
 /** Состояние авторизации и данных пользователя */
 export interface UserState {
   /** Статус проверки токена */
@@ -60,12 +66,15 @@ export interface UserState {
   userData: TUser | null;
   /** Текст ошибки */
   errorText: string;
+  /** История заказов пользователя */
+  orders: TOrder[];
 }
 
 const initialState: UserState = {
   isAuthChecked: false,
   userData: null,
   errorText: '',
+  orders: [],
 };
 
 export const userSlice = createSlice({
@@ -120,6 +129,10 @@ export const userSlice = createSlice({
       .addCase(logoutUserThunk.fulfilled, (state) => {
         state.userData = null;
         state.errorText = '';
+      })
+      /** Получение истории заказов */
+      .addCase(loadUserOrdersThunk.fulfilled, (state, { payload }) => {
+        state.orders = payload;
       });
   }
 });
@@ -129,5 +142,6 @@ export const { authChecked } = userSlice.actions;
 export const getUserData = (state: RootState) => state.user.userData;
 export const getIsAuthCheckedState = (state: RootState) => state.user.isAuthChecked;
 export const getUserErrorText = (state: RootState) => state. user.errorText;
+export const getUserOrders = (state: RootState) => state.user.orders;
 
 export default userSlice.reducer;
