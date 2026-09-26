@@ -18,7 +18,7 @@ import styles from './app.module.css';
 import { useDispatch, useSelector } from '@/services/store';
 import { useEffect } from 'react';
 import { getIngredientsError, getIngredientsLoading, getIngredientsState, getIngredientsThunk } from '@/services/slices/ingredientsSlice';
-import { checkUserAuthThunk } from '@/services/slices/userSlice';
+import { authChecked, checkUserAuthThunk } from '@/services/slices/userSlice';
 import { ProtectedRoute } from '../protected-route/protected-route';
 
 const App = (): React.JSX.Element => {
@@ -30,7 +30,12 @@ const App = (): React.JSX.Element => {
 
   useEffect(() => {
     dispatch(getIngredientsThunk());
-    dispatch(checkUserAuthThunk());
+
+    if (localStorage.getItem('refreshToken')) {
+      dispatch(checkUserAuthThunk());
+    } else {
+      dispatch(authChecked());
+    }
   }, [dispatch]);
 
   return (

@@ -53,13 +53,13 @@ export interface UserState {
   /** Данные пользователя */
   userData: TUser | null;
   /** Текст ошибки */
-  errorText: string | null;
+  errorText: string;
 }
 
 const initialState: UserState = {
   isAuthChecked: false,
   userData: null,
-  errorText: null,
+  errorText: '',
 };
 
 export const userSlice = createSlice({
@@ -76,7 +76,7 @@ export const userSlice = createSlice({
       .addCase(checkUserAuthThunk.fulfilled, (state, { payload }) => {
         state.userData = payload;
         state.isAuthChecked = true;
-        state.errorText = null;
+        state.errorText = '';
       })
       .addCase(checkUserAuthThunk.rejected, (state) => {
         state.userData = null;
@@ -86,7 +86,7 @@ export const userSlice = createSlice({
       .addCase(loginUserThunk.fulfilled, (state, { payload }) => {
         state.userData = payload;
         state.isAuthChecked = true;
-        state.errorText = null;
+        state.errorText = '';
       })
       .addCase(loginUserThunk.rejected, (state, action) => {
         state.errorText = action.error.message || 'Ошибка';
@@ -96,7 +96,7 @@ export const userSlice = createSlice({
       .addCase(registerUserThunk.fulfilled, (state, { payload }) => {
         state.userData = payload;
         state.isAuthChecked = true;
-        state.errorText = null;
+        state.errorText = '';
       })
       .addCase(registerUserThunk.rejected, (state, action) => {
         state.errorText = action.error.message || 'Ошибка';
@@ -105,14 +105,15 @@ export const userSlice = createSlice({
     /** Выход пользователя */
       .addCase(logoutUserThunk.fulfilled, (state) => {
         state.userData = null;
-        state.errorText = null;
+        state.errorText = '';
       });
   }
 });
 
 export const { authChecked } = userSlice.actions;
 
-export const getUserState = (state: RootState) => state.user.userData;
+export const getUserData = (state: RootState) => state.user.userData;
 export const getIsAuthCheckedState = (state: RootState) => state.user.isAuthChecked;
+export const getUserErrorText = (state: RootState) => state. user.errorText;
 
 export default userSlice.reducer;

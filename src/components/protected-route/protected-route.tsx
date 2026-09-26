@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useSelector } from '../../services/store';
-import { getIsAuthCheckedState, getUserState } from '../../services/slices/userSlice';
+import { getIsAuthCheckedState, getUserData } from '../../services/slices/userSlice';
 import { Preloader } from '@ui';
 
 interface ProtectedRouteProps {
@@ -22,7 +22,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ onlyGuests = fal
   const location = useLocation();
 
   const isAuthChecked = useSelector(getIsAuthCheckedState);
-  const user = useSelector(getUserState);
+  const user = useSelector(getUserData);
 
   if (!isAuthChecked) {
     return <Preloader />;
