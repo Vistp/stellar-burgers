@@ -31,7 +31,22 @@ const initialState: ConstructorState = {
 export const constructorSlice = createSlice({
   name: 'constructor',
   initialState,
-  reducers: {},
+  reducers: {
+    addIngredient: (state, { payload }) => {
+      if (payload.type === 'bun') {
+        state.bun = payload;
+      } else {
+        state.ingredients.push(payload);
+      }
+    },
+    resetConstructor: (state) => {
+      state.bun = null;
+      state.ingredients = [];
+    },
+    clearOrderModal: (state) => {
+      state.orderModalData = null;
+    }
+  },
 
   extraReducers: (builder) => {
     builder
@@ -49,6 +64,8 @@ export const constructorSlice = createSlice({
   }
 });
 
-export const getConstructorState = (state: RootState) => state.constructor;
+export const { addIngredient, resetConstructor, clearOrderModal } = constructorSlice.actions;
+
+export const getConstructorState = (state: RootState) => state.burgerConstructor;
 
 export default constructorSlice.reducer;

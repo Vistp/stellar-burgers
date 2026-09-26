@@ -3,15 +3,19 @@ import { memo } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import type { TBurgerIngredientProps } from './type';
+import { useDispatch } from '@/services/store';
+import { addIngredient } from '@/services/slices/constructorSlice';
 
 export const BurgerIngredient = memo(function BurgerIngredient({
   ingredient,
   count,
 }: TBurgerIngredientProps): React.JSX.Element {
+  const dispatch = useDispatch();
+
   const location = useLocation();
 
   const handleAdd = (): void => {
-    // TODO: Добавить ингредиент в конструктор
+    dispatch(addIngredient(ingredient));
   };
 
   return (
