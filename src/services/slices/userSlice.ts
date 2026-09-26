@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getUserApi, loginUserApi, logoutApi, registerUserApi, type TLoginData, type TRegisterData } from '../../utils/burger-api';
+import { getUserApi, loginUserApi, logoutApi, registerUserApi, updateUserApi, type TLoginData, type TRegisterData } from '../../utils/burger-api';
 import type { TUser } from '../../utils/types';
 import type { RootState } from '../store';
 import { deleteCookie, setCookie } from '@/utils/cookie';
@@ -32,6 +32,12 @@ export const registerUserThunk = createAsyncThunk(
 
       return res.user;
     })
+);
+
+/** Обновляет данные пользователя на сервере */
+export const updateUserThunk = createAsyncThunk(
+  'user/update',
+  (data: Partial<TRegisterData>) => updateUserApi(data).then((res) => res.user)
 );
 
 /** Разлогинивает пользователя и очищает токены */
@@ -101,6 +107,14 @@ export const userSlice = createSlice({
       .addCase(registerUserThunk.rejected, (state, action) => {
         state.errorText = action.error.message || 'Ошибка';
         state.isAuthChecked = true;
+      })
+    /** Обновление данных пользователя */
+      .addCase(updateUserThunk.fulfilled, (state, { payload }) => {
+        state.userData = payload;
+        state.errorText = '';
+      })
+      .addCase(updateUserThunk.rejected, (state, action) => {
+        state.errorText = action.error.message || 'Ошибка';
       })
     /** Выход пользователя */
       .addCase(logoutUserThunk.fulfilled, (state) => {
