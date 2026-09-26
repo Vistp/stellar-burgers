@@ -1,6 +1,6 @@
 import { getUserData } from '@/services/slices/userSlice';
+import { useSelector } from '@/services/store';
 import { AppHeaderUI } from '@ui';
-import { useSelector } from 'react-redux';
 
 export const AppHeader = (): React.JSX.Element => {
   const userData = useSelector(getUserData);
