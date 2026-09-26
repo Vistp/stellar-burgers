@@ -4,20 +4,18 @@ import { useMemo } from 'react';
 import type { TIngredient } from '@utils-types';
 import { useSelector } from '@/services/store';
 import { getIngredientsState } from '@/services/slices/ingredientsSlice';
+import { useParams } from 'react-router-dom';
+import { getUserOrders } from '@/services/slices/userSlice';
 
 export const OrderInfo = (): React.JSX.Element => {
-  /** TODO: взять переменную orderData из стора */
-  const orderData = {
-    createdAt: '',
-    ingredients: [],
-    _id: '',
-    status: '',
-    name: '',
-    updatedAt: 'string',
-    number: 0,
-  };
+  const { number } = useParams<{ number: string }>();
 
+  const orders = useSelector(getUserOrders);
   const ingredients = useSelector(getIngredientsState);
+
+  const orderData = useMemo(() =>
+    orders.find((item) => item.number === Number(number)),
+  [orders, number]);
 
   /**
    * использование useMemo не обязательно
