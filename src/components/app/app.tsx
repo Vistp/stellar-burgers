@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from '@/services/store';
 import { useEffect } from 'react';
 import { getIngredientsError, getIngredientsLoading, getIngredientsState, getIngredientsThunk } from '@/services/slices/ingredientsSlice';
 import { checkUserAuthThunk } from '@/services/slices/userSlice';
+import { ProtectedRoute } from '../protected-route/protected-route';
 
 const App = (): React.JSX.Element => {
   const dispatch = useDispatch();
@@ -80,18 +81,51 @@ const RouteComponent = (): React.JSX.Element => {
 
   const background = location.state && location.state.background;
 
-  return (
+   return (
     <>
       {/* Страницы */}
-      <Routes>
+      <Routes location={background || location}>
         <Route path="/" element={<ConstructorPage />} />
         <Route path="/feed" element={<Feed />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/profile/orders" element={<ProfileOrders />} />
+        <Route path="/feed/:number" element={<OrderInfo />} />
+        <Route path="/ingredients/:id" element={<IngredientDetails />} />
+
+        <Route path="/login" element={
+          <ProtectedRoute onlyGuests>
+            <Login />
+          </ProtectedRoute>
+        } />
+        <Route path="/register" element={
+          <ProtectedRoute onlyGuests>
+            <Register />
+          </ProtectedRoute>
+        } />
+        <Route path="/forgot-password" element={
+          <ProtectedRoute onlyGuests>
+            <ForgotPassword />
+          </ProtectedRoute>
+        } />
+        <Route path="/reset-password" element={
+          <ProtectedRoute onlyGuests>
+            <ResetPassword />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/profile" element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        } />
+        <Route path="/profile/orders" element={
+          <ProtectedRoute>
+            <ProfileOrders />
+          </ProtectedRoute>
+        } />
+        <Route path="/profile/orders/:number" element={
+          <ProtectedRoute>
+            <OrderInfo />
+          </ProtectedRoute>
+        } />
         <Route path="*" element={<NotFound404 />} />
       </Routes>
 
@@ -117,9 +151,11 @@ const RouteComponent = (): React.JSX.Element => {
           <Route
             path="/profile/orders/:number"
             element={
-              <Modal title="Информация о заказе" onClose={() => window.history.back()}>
-                <OrderInfo />
-              </Modal>
+              <ProtectedRoute>
+                <Modal title="Информация о заказе" onClose={() => window.history.back()}>
+                  <OrderInfo />
+                </Modal>
+              </ProtectedRoute>
             }
           />
         </Routes>
