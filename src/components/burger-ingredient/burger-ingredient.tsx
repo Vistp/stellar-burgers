@@ -14,8 +14,11 @@ export const BurgerIngredient = memo(function BurgerIngredient({
 
   const location = useLocation();
 
-  const handleAdd = (): void => {
-    dispatch(addIngredient(ingredient));
+   const handleAdd = (): void => {
+    dispatch(addIngredient({
+      ...ingredient,
+      id: String(Date.now() + Math.random())
+    }));
   };
 
   return (

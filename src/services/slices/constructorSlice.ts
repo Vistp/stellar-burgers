@@ -39,6 +39,21 @@ export const constructorSlice = createSlice({
         state.ingredients.push(payload);
       }
     },
+    removeIngredient: (state, action) => {
+      state.ingredients = state.ingredients.filter((item) => item.id !== action.payload);
+    },
+    moveIngredientUp: (state, { payload }) => {
+      const currentIngredient = state.ingredients[payload];
+
+      state.ingredients[payload] = state.ingredients[payload - 1];
+      state.ingredients[payload - 1] = currentIngredient;
+    },
+    moveIngredientDown: (state, { payload }) => {
+      const currentIngredient = state.ingredients[payload];
+
+      state.ingredients[payload] = state.ingredients[payload + 1];
+      state.ingredients[payload + 1] = currentIngredient;
+    },
     resetConstructor: (state) => {
       state.bun = null;
       state.ingredients = [];
@@ -64,7 +79,7 @@ export const constructorSlice = createSlice({
   }
 });
 
-export const { addIngredient, resetConstructor, clearOrderModal } = constructorSlice.actions;
+export const { addIngredient, resetConstructor, clearOrderModal, removeIngredient, moveIngredientUp, moveIngredientDown } = constructorSlice.actions;
 
 export const getConstructorState = (state: RootState) => state.burgerConstructor;
 
