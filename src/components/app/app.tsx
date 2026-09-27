@@ -20,7 +20,6 @@ import { useEffect } from 'react';
 import { getIngredientsError, getIngredientsLoading, getIngredientsState, getIngredientsThunk } from '@/services/slices/ingredientsSlice';
 import { authChecked, checkUserAuthThunk } from '@/services/slices/userSlice';
 import { ProtectedRoute } from '../protected-route/protected-route';
-import { getConstructorState } from '@/services/slices/constructorSlice';
 
 const App = (): React.JSX.Element => {
   const dispatch = useDispatch();
@@ -28,9 +27,6 @@ const App = (): React.JSX.Element => {
   const ingredients = useSelector(getIngredientsState);
   const isIngredientsLoading = useSelector(getIngredientsLoading);
   const ingredientsError = useSelector(getIngredientsError);
-   const constructorState = useSelector(getConstructorState);
-// FIXME: удалить!
-  console.log(constructorState);
 
   useEffect(() => {
     dispatch(getIngredientsThunk());

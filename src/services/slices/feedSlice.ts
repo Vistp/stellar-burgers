@@ -5,7 +5,7 @@ import type { RootState } from '../store';
 
 /** Получает общую ленту заказов */
 export const loadFeedThunk = createAsyncThunk(
-  'feed/fetch',
+  'feed/loadFeed',
   () => getFeedsApi().then((res) => res.orders)
 );
 

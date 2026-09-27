@@ -6,13 +6,13 @@ import { deleteCookie, setCookie } from '@/utils/cookie';
 
 /** Проверяет авторизацию пользователя */
 export const checkUserAuthThunk = createAsyncThunk(
-  'user/checkAuth',
+  'user/checkUserAuth',
   () => getUserApi().then((res) => res.user)
 );
 
 /** Авторизует пользователя и сохраняет токен */
 export const loginUserThunk = createAsyncThunk(
-  'user/login',
+  'user/loginUser',
   (data: TLoginData) =>
     loginUserApi(data).then((res) => {
       localStorage.setItem('refreshToken', res.refreshToken);
@@ -24,7 +24,7 @@ export const loginUserThunk = createAsyncThunk(
 
 /** Регистрирует нового пользователя и сохраняет токен */
 export const registerUserThunk = createAsyncThunk(
-  'user/register',
+  'user/registerUser',
   (data: TRegisterData) =>
     registerUserApi(data).then((res) => {
       localStorage.setItem('refreshToken', res.refreshToken);
@@ -36,13 +36,13 @@ export const registerUserThunk = createAsyncThunk(
 
 /** Обновляет данные пользователя на сервере */
 export const updateUserThunk = createAsyncThunk(
-  'user/update',
+  'user/updateUser',
   (data: Partial<TRegisterData>) => updateUserApi(data).then((res) => res.user)
 );
 
 /** Разлогинивает пользователя и очищает токены */
 export const logoutUserThunk = createAsyncThunk(
-  'user/logout',
+  'user/logoutUser',
   () =>
     logoutApi().then((res) => {
       localStorage.removeItem('refreshToken');
@@ -54,7 +54,7 @@ export const logoutUserThunk = createAsyncThunk(
 
 /** Получает историю заказов пользователя */
 export const loadUserOrdersThunk = createAsyncThunk(
-  'user/fetchOrders',
+  'user/loadOrders',
   () => getOrdersApi().then((res) => res)
 );
 
@@ -87,7 +87,7 @@ export const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-    /** Проверка авторизации пользователя */
+      /** Проверка авторизации пользователя */
       .addCase(checkUserAuthThunk.fulfilled, (state, { payload }) => {
         state.userData = payload;
         state.isAuthChecked = true;
@@ -97,7 +97,7 @@ export const userSlice = createSlice({
         state.userData = null;
         state.isAuthChecked = true;
       })
-    /** Авторизация пользователя */
+      /** Авторизация пользователя */
       .addCase(loginUserThunk.fulfilled, (state, { payload }) => {
         state.userData = payload;
         state.isAuthChecked = true;
@@ -107,7 +107,7 @@ export const userSlice = createSlice({
         state.errorText = action.error.message || 'Ошибка';
         state.isAuthChecked = true;
       })
-    /** Регистрация пользователя */
+      /** Регистрация пользователя */
       .addCase(registerUserThunk.fulfilled, (state, { payload }) => {
         state.userData = payload;
         state.isAuthChecked = true;
@@ -117,7 +117,7 @@ export const userSlice = createSlice({
         state.errorText = action.error.message || 'Ошибка';
         state.isAuthChecked = true;
       })
-    /** Обновление данных пользователя */
+      /** Обновление данных пользователя */
       .addCase(updateUserThunk.fulfilled, (state, { payload }) => {
         state.userData = payload;
         state.errorText = '';
@@ -125,7 +125,7 @@ export const userSlice = createSlice({
       .addCase(updateUserThunk.rejected, (state, action) => {
         state.errorText = action.error.message || 'Ошибка';
       })
-    /** Выход пользователя */
+      /** Выход пользователя */
       .addCase(logoutUserThunk.fulfilled, (state) => {
         state.userData = null;
         state.errorText = '';

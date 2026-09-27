@@ -65,7 +65,7 @@ export const constructorSlice = createSlice({
 
   extraReducers: (builder) => {
     builder
-    /** Отправка ингредиентов на сервер */
+      /** Отправка ингредиентов на сервер */
       .addCase(orderBurgerThunk.pending, (state) => {
         state.orderRequest = true;
       })

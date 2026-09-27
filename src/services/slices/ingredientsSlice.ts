@@ -3,14 +3,19 @@ import { getIngredientsApi } from '../../utils/burger-api';
 import type { TIngredient } from '@/utils/types';
 import type { RootState } from '../store';
 
+/** Получает список ингредиентов */
 export const getIngredientsThunk = createAsyncThunk(
   'ingredients/getIngredients',
   () => getIngredientsApi().then((data) => data)
 );
 
+/** Состояние списка ингредиентов */
 export interface IngredientsState {
+  /** Массив ингредиентов */
   ingredients: TIngredient[];
+  /** Состояние загрузки */
   isLoading: boolean;
+  /** Текст ошибки */
   error: string | null;
 }
 
@@ -26,6 +31,7 @@ export const ingredientsSlice = createSlice({
   reducers: {},
 
   extraReducers: (builder) => {
+    /** Получение списка ингредиентов */
     builder.addCase(getIngredientsThunk.pending, (state) => {
       state.isLoading = true;
       state.error = null;

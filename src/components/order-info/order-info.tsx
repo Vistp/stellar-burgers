@@ -6,16 +6,20 @@ import { useSelector } from '@/services/store';
 import { getIngredientsState } from '@/services/slices/ingredientsSlice';
 import { useParams } from 'react-router-dom';
 import { getUserOrders } from '@/services/slices/userSlice';
+import { getFeedOrders } from '@/services/slices/feedSlice';
 
 export const OrderInfo = (): React.JSX.Element => {
   const { number } = useParams<{ number: string }>();
 
-  const orders = useSelector(getUserOrders);
+  const userOrders = useSelector(getUserOrders);
   const ingredients = useSelector(getIngredientsState);
+  const feedOrders = useSelector(getFeedOrders);
 
-  const orderData = useMemo(() =>
-    orders.find((item) => item.number === Number(number)),
-  [orders, number]);
+  const orderData = useMemo(() => {
+    const orders = [...feedOrders, ...userOrders];
+
+    return orders.find((item) => item.number === Number(number));
+  }, [feedOrders, userOrders, number]);
 
   /**
    * использование useMemo не обязательно
