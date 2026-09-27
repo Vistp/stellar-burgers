@@ -1,23 +1,24 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { getFeedsApi } from '../../utils/burger-api';
-import type { TOrder } from '../../utils/types';
+import type { TOrder, TOrdersData } from '../../utils/types';
 import type { RootState } from '../store';
 
 /** Получает общую ленту заказов */
 export const loadFeedThunk = createAsyncThunk(
   'feed/loadFeed',
-  () => getFeedsApi().then((res) => res.orders)
+  () => getFeedsApi().then((res) => res)
 );
 
-/** Состояние общей ленты заказов */
+/** Состояние общей ленты заказов и количества заказов */
 export interface FeedState {
-  /** Список всех заказов */
-  orders: TOrder[];
+  /** Данные заказов: список, общее количество выполненных за все время и за сегодня */
+  ordersData: TOrdersData | null;
 }
 
 const initialState: FeedState = {
-  orders: [],
+  ordersData: null,
 };
+
 const feedSlice = createSlice({
   name: 'feed',
   initialState,
@@ -25,11 +26,11 @@ const feedSlice = createSlice({
   extraReducers: (builder) => {
     /** Получение общей ленты заказов */
     builder.addCase(loadFeedThunk.fulfilled, (state, { payload }) => {
-      state.orders = payload;
+      state.ordersData = payload;
     });
   }
 });
 
-export const getFeedOrders = (state: RootState) => state.feed.orders;
+export const getFeedOrdersData = (state: RootState) => state.feed.ordersData;
 
 export default feedSlice.reducer;

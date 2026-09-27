@@ -1,5 +1,5 @@
-import { loadFeedThunk, getFeedOrders } from '@/services/slices/feedSlice';
-import { useDispatch, useSelector } from '@/services/store';
+import { loadFeedThunk, getFeedOrdersData } from '../../services/slices/feedSlice';
+import { useDispatch, useSelector } from '../../services/store';
 import { Preloader } from '@ui';
 import { FeedUI } from '@ui-pages';
 import { useEffect } from 'react';
@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 export const Feed = (): React.JSX.Element => {
   const dispatch = useDispatch();
 
-  const orders = useSelector(getFeedOrders);
+  const ordersData = useSelector(getFeedOrdersData);
 
   const handleGetFeeds = (): void => {
     dispatch(loadFeedThunk());
@@ -17,9 +17,9 @@ export const Feed = (): React.JSX.Element => {
     dispatch(loadFeedThunk());
   }, [dispatch]);
 
-  if (!orders.length) {
+  if (!ordersData || !ordersData.orders.length) {
     return <Preloader />;
   }
 
-  return <FeedUI orders={orders} handleGetFeeds={handleGetFeeds} />;
+  return <FeedUI orders={ordersData.orders} handleGetFeeds={handleGetFeeds} />;
 };
