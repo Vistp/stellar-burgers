@@ -1,17 +1,27 @@
+import { deleteCookie, setCookie } from '@/utils/cookie';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getOrdersApi, getUserApi, loginUserApi, logoutApi, registerUserApi, updateUserApi, type TLoginData, type TRegisterData } from '../../utils/burger-api';
+
+import {
+  getOrdersApi,
+  getUserApi,
+  loginUserApi,
+  logoutApi,
+  registerUserApi,
+  updateUserApi,
+  type TLoginData,
+  type TRegisterData,
+} from '../../utils/burger-api';
+
 import type { TOrder, TUser } from '../../utils/types';
 import type { RootState } from '../store';
-import { deleteCookie, setCookie } from '@/utils/cookie';
 
 /** Проверяет авторизацию пользователя */
-export const checkUserAuthThunk = createAsyncThunk(
-  'user/checkUserAuth',
-  () => getUserApi().then((res) => res.user)
+export const checkUserAuthThunk = createAsyncThunk<TUser>('user/checkUserAuth', () =>
+  getUserApi().then((res) => res.user)
 );
 
 /** Авторизует пользователя и сохраняет токен */
-export const loginUserThunk = createAsyncThunk(
+export const loginUserThunk = createAsyncThunk<TUser, TLoginData>(
   'user/loginUser',
   (data: TLoginData) =>
     loginUserApi(data).then((res) => {
@@ -23,7 +33,7 @@ export const loginUserThunk = createAsyncThunk(
 );
 
 /** Регистрирует нового пользователя и сохраняет токен */
-export const registerUserThunk = createAsyncThunk(
+export const registerUserThunk = createAsyncThunk<TUser, TRegisterData>(
   'user/registerUser',
   (data: TRegisterData) =>
     registerUserApi(data).then((res) => {
@@ -35,13 +45,13 @@ export const registerUserThunk = createAsyncThunk(
 );
 
 /** Обновляет данные пользователя на сервере */
-export const updateUserThunk = createAsyncThunk(
+export const updateUserThunk = createAsyncThunk<TUser, Partial<TRegisterData>>(
   'user/updateUser',
   (data: Partial<TRegisterData>) => updateUserApi(data).then((res) => res.user)
 );
 
 /** Разлогинивает пользователя и очищает токены */
-export const logoutUserThunk = createAsyncThunk(
+export const logoutUserThunk = createAsyncThunk<{ success: boolean }>(
   'user/logoutUser',
   () =>
     logoutApi().then((res) => {
@@ -53,13 +63,12 @@ export const logoutUserThunk = createAsyncThunk(
 );
 
 /** Получает историю заказов пользователя */
-export const loadUserOrdersThunk = createAsyncThunk(
-  'user/loadOrders',
-  () => getOrdersApi().then((res) => res)
+export const loadUserOrdersThunk = createAsyncThunk<TOrder[]>('user/loadOrders', () =>
+  getOrdersApi().then((res) => res)
 );
 
 /** Состояние авторизации и данных пользователя */
-export interface UserState {
+export type UserState = {
   /** Статус проверки токена */
   isAuthChecked: boolean;
   /** Данные пользователя */
@@ -68,7 +77,7 @@ export interface UserState {
   errorText: string;
   /** История заказов пользователя */
   orders: TOrder[];
-}
+};
 
 const initialState: UserState = {
   isAuthChecked: false,
@@ -83,7 +92,7 @@ export const userSlice = createSlice({
   reducers: {
     authChecked: (state) => {
       state.isAuthChecked = true;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -104,7 +113,7 @@ export const userSlice = createSlice({
         state.errorText = '';
       })
       .addCase(loginUserThunk.rejected, (state, action) => {
-        state.errorText = action.error.message || 'Ошибка';
+        state.errorText = action.error.message ?? 'Ошибка';
         state.isAuthChecked = true;
       })
       /** Регистрация пользователя */
@@ -114,7 +123,7 @@ export const userSlice = createSlice({
         state.errorText = '';
       })
       .addCase(registerUserThunk.rejected, (state, action) => {
-        state.errorText = action.error.message || 'Ошибка';
+        state.errorText = action.error.message ?? 'Ошибка';
         state.isAuthChecked = true;
       })
       /** Обновление данных пользователя */
@@ -123,7 +132,7 @@ export const userSlice = createSlice({
         state.errorText = '';
       })
       .addCase(updateUserThunk.rejected, (state, action) => {
-        state.errorText = action.error.message || 'Ошибка';
+        state.errorText = action.error.message ?? 'Ошибка';
       })
       /** Выход пользователя */
       .addCase(logoutUserThunk.fulfilled, (state) => {
@@ -134,14 +143,15 @@ export const userSlice = createSlice({
       .addCase(loadUserOrdersThunk.fulfilled, (state, { payload }) => {
         state.orders = payload;
       });
-  }
+  },
 });
 
 export const { authChecked } = userSlice.actions;
 
-export const getUserData = (state: RootState) => state.user.userData;
-export const getIsAuthCheckedState = (state: RootState) => state.user.isAuthChecked;
-export const getUserErrorText = (state: RootState) => state. user.errorText;
-export const getUserOrders = (state: RootState) => state.user.orders;
+export const getUserData = (state: RootState): TUser | null => state.user.userData;
+export const getIsAuthCheckedState = (state: RootState): boolean =>
+  state.user.isAuthChecked;
+export const getUserErrorText = (state: RootState): string => state.user.errorText;
+export const getUserOrders = (state: RootState): TOrder[] => state.user.orders;
 
 export default userSlice.reducer;
