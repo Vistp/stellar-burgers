@@ -13,9 +13,9 @@ const getOrders = (orders: TOrder[], status: string): number[] =>
 export const FeedInfo = (): React.JSX.Element => {
   const feedData = useSelector(getFeedOrdersData);
 
-  const orders = feedData?.orders || [];
-  const total = feedData?.total || 0;
-  const totalToday = feedData?.totalToday || 0;
+  const orders = feedData?.orders ?? [];
+  const total = feedData?.total ?? 0;
+  const totalToday = feedData?.totalToday ?? 0;
 
   const feed: TFeedState = {
     orders,

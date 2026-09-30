@@ -15,7 +15,7 @@ export const OrderInfo = (): React.JSX.Element => {
   const ingredients = useSelector(getIngredientsState);
   const feedData = useSelector(getFeedOrdersData);
 
-  const feedOrders = feedData?.orders || [];
+  const feedOrders = feedData?.orders ?? [];
 
   const orderData = useMemo(() => {
     const orders = [...feedOrders, ...userOrders];
