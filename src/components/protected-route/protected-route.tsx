@@ -4,6 +4,14 @@ import { useSelector } from '../../services/store';
 import { getIsAuthCheckedState, getUserData } from '../../services/slices/userSlice';
 import { Preloader } from '@ui';
 
+interface LocationState {
+  /** Предыдущий маршрут, с которого пользователя перенаправило */
+  from?: {
+    /** Путь к странице */
+    pathname: string;
+  };
+}
+
 interface ProtectedRouteProps {
   /** Флаг доступа к маршруту:
       - true: маршрут для незалогиненных
@@ -29,7 +37,8 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ onlyGuests = fal
   }
 
   if (onlyGuests && user) {
-    const from = location.state?.from ?? { pathname: '/' };
+    const state = location.state as LocationState;
+    const from = state?.from ?? { pathname: '/' };
     return <Navigate to={from} />;
   }
 
