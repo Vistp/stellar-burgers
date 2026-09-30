@@ -36,7 +36,15 @@ export const Profile = (): React.JSX.Element => {
       name: formValue.name,
       email: formValue.email,
       password: formValue.password || undefined
-    }));
+    }))
+      .unwrap()
+      .then(() => {
+        setFormValue((prevState) => ({
+          ...prevState,
+          password: '',
+        }));
+      })
+      .catch(() => {});
   };
 
   const handleCancel = (e: SyntheticEvent): void => {
