@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import type { TConstructorIngredient, TConstructorState } from '@utils-types';
 import { useDispatch, useSelector } from '@/services/store';
 import { useNavigate } from 'react-router-dom';
-import { clearOrderModal, getConstructorState, orderBurgerThunk, resetConstructor } from '@/services/slices/constructorSlice';
+import { clearOrderModal, getConstructorState, orderBurgerThunk } from '@/services/slices/constructorSlice';
 import { getUserData } from '@/services/slices/userSlice';
 
 export const BurgerConstructor = (): React.JSX.Element | null => {
@@ -29,12 +29,10 @@ export const BurgerConstructor = (): React.JSX.Element | null => {
     const ingredientIds = [
       constructorItems.bun._id,
       ...constructorItems.ingredients.map((item) => item._id),
+      constructorItems.bun._id,
     ];
 
-    dispatch(orderBurgerThunk(ingredientIds))
-      .then(() => {
-        dispatch(resetConstructor());
-      });
+    dispatch(orderBurgerThunk(ingredientIds));
   };
 
   const closeOrderModal = (): void => {
