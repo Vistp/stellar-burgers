@@ -1,14 +1,15 @@
 import { Preloader, OrderInfoUI } from '@ui';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import type { TIngredient } from '@utils-types';
-import { useSelector } from '@/services/store';
+import { useDispatch, useSelector } from '@/services/store';
 import { getIngredientsState } from '@/services/slices/ingredientsSlice';
 import { useParams } from 'react-router-dom';
-import { getUserOrders } from '@/services/slices/userSlice';
-import { getFeedOrdersData } from '@/services/slices/feedSlice';
+import { getUserOrders, loadUserOrdersThunk } from '@/services/slices/userSlice';
+import { getFeedOrdersData, loadFeedThunk } from '@/services/slices/feedSlice';
 
 export const OrderInfo = (): React.JSX.Element => {
+  const dispatch = useDispatch();
   const { number } = useParams<{ number: string }>();
 
   const userOrders = useSelector(getUserOrders);
@@ -23,6 +24,15 @@ export const OrderInfo = (): React.JSX.Element => {
     return orders.find((item) => item.number === Number(number));
   }, [feedOrders, userOrders, number]);
 
+
+  useEffect(() => {
+    if (!feedOrders.length) {
+      dispatch(loadFeedThunk());
+    }
+    if (!userOrders.length && localStorage.getItem('refreshToken')) {
+      dispatch(loadUserOrdersThunk());
+    }
+  }, [dispatch, feedOrders.length, userOrders.length]);
   /**
    * использование useMemo не обязательно
    */

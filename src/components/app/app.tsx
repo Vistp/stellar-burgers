@@ -11,7 +11,7 @@ import {
   NotFound404
 } from '@pages';
 import { Preloader } from '@ui';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, useParams } from 'react-router-dom';
 import type { AppContentProps } from './type';
 import '../../index.css';
 import styles from './app.module.css';
@@ -92,7 +92,9 @@ const RouteComponent = (): React.JSX.Element => {
       <Routes location={background || location}>
         <Route path="/" element={<ConstructorPage />} />
         <Route path="/feed" element={<Feed />} />
-        <Route path="/feed/:number" element={<OrderInfo />} />
+        <Route path="/feed/:number" element={<FeedOrderPage />} />
+        <Route path="/ingredients/:id" element={<IngredientDetails />} />
+
         <Route path="/ingredients/:id" element={<IngredientDetails />} />
 
         <Route path="/login" element={
@@ -126,25 +128,14 @@ const RouteComponent = (): React.JSX.Element => {
             <ProfileOrders />
           </ProtectedRoute>
         } />
-        <Route path="/profile/orders/:number" element={
-          <ProtectedRoute>
-            <OrderInfo />
-          </ProtectedRoute>
-        } />
+        <Route path="/profile/orders/:number" element={<ProfileOrderPage />} />
         <Route path="*" element={<NotFound404 />} />
       </Routes>
 
       {/* Модальные окна */}
       {background && (
         <Routes>
-          <Route
-            path="/feed/:number"
-            element={
-              <Modal title="Информация о заказе" onClose={() => window.history.back()}>
-                <OrderInfo />
-              </Modal>
-            }
-          />
+          <Route path="/feed/:number" element={<FeedOrderModal />} />
           <Route
             path="/ingredients/:id"
             element={
@@ -153,18 +144,51 @@ const RouteComponent = (): React.JSX.Element => {
               </Modal>
             }
           />
-          <Route
-            path="/profile/orders/:number"
-            element={
-              <ProtectedRoute>
-                <Modal title="Информация о заказе" onClose={() => window.history.back()}>
-                  <OrderInfo />
-                </Modal>
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/profile/orders/:number" element={<ProfileOrderModal />} />
         </Routes>
       )}
     </>
+  );
+};
+
+const FeedOrderPage = () => {
+  const { number } = useParams<{ number: string }>();
+  return (
+    <div className={styles.detailPageWrap}>
+        {`#${number ?? ''}`}
+      <OrderInfo />
+    </div>
+  );
+};
+
+const ProfileOrderPage = () => {
+  const { number } = useParams<{ number: string }>();
+  return (
+    <ProtectedRoute>
+      <div className={styles.detailPageWrap}>
+          {`#${number ?? ''}`}
+        <OrderInfo />
+      </div>
+    </ProtectedRoute>
+  );
+};
+
+const FeedOrderModal = () => {
+  const { number } = useParams<{ number: string }>();
+  return (
+    <Modal title={`#${number ?? ''}`} onClose={() => window.history.back()}>
+      <OrderInfo />
+    </Modal>
+  );
+};
+
+const ProfileOrderModal = () => {
+  const { number } = useParams<{ number: string }>();
+  return (
+    <ProtectedRoute>
+      <Modal title={`#${number ?? ''}`} onClose={() => window.history.back()}>
+        <OrderInfo />
+      </Modal>
+    </ProtectedRoute>
   );
 };
