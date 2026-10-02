@@ -32,7 +32,8 @@ export const BurgerConstructor = (): React.JSX.Element | null => {
       constructorItems.bun._id,
     ];
 
-    void dispatch(orderBurgerThunk(ingredientIds));
+    dispatch(orderBurgerThunk(ingredientIds))
+      .catch((error) => console.error(error));
   };
 
   const closeOrderModal = (): void => {

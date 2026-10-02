@@ -14,7 +14,8 @@ export const Feed = (): React.JSX.Element => {
   };
 
   useEffect(() => {
-    void dispatch(loadFeedThunk());
+    dispatch(loadFeedThunk())
+      .catch((error) => console.error(error));
   }, [dispatch]);
 
   if (!ordersData || !ordersData.orders.length) {

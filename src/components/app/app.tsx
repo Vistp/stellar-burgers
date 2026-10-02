@@ -34,7 +34,7 @@ const App = (): React.JSX.Element => {
   const ingredientsError = useSelector(getIngredientsError);
 
   useEffect(() => {
-    dispatch(getIngredientsThunk());
+    void dispatch(getIngredientsThunk());
 
     if (localStorage.getItem('refreshToken')) {
       void dispatch(checkUserAuthThunk());
