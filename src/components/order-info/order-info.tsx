@@ -27,10 +27,10 @@ export const OrderInfo = (): React.JSX.Element => {
 
   useEffect(() => {
     if (!feedOrders.length) {
-      dispatch(loadFeedThunk());
+      void dispatch(loadFeedThunk());
     }
     if (!userOrders.length && localStorage.getItem('refreshToken')) {
-      dispatch(loadUserOrdersThunk());
+      void dispatch(loadUserOrdersThunk());
     }
   }, [dispatch, feedOrders.length, userOrders.length]);
   /**

@@ -37,9 +37,9 @@ const App = (): React.JSX.Element => {
     dispatch(getIngredientsThunk());
 
     if (localStorage.getItem('refreshToken')) {
-      dispatch(checkUserAuthThunk());
+      void dispatch(checkUserAuthThunk());
     } else {
-      dispatch(authChecked());
+      void dispatch(authChecked());
     }
   }, [dispatch]);
 

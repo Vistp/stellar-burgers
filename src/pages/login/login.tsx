@@ -15,7 +15,7 @@ export const Login = (): React.JSX.Element => {
   const handleSubmit = (e: SyntheticEvent): void => {
     e.preventDefault();
 
-    dispatch(loginUserThunk({ email, password }));
+    void dispatch(loginUserThunk({ email, password }));
   };
 
   return (

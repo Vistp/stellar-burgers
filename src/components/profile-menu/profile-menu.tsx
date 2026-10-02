@@ -9,7 +9,7 @@ export const ProfileMenu = (): React.JSX.Element => {
   const { pathname } = useLocation();
 
   const handleLogout = (): void => {
-    dispatch(logoutUserThunk());
+    void dispatch(logoutUserThunk());
   };
 
   return <ProfileMenuUI handleLogout={handleLogout} pathname={pathname} />;

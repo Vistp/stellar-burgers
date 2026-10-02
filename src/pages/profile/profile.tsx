@@ -44,7 +44,7 @@ export const Profile = (): React.JSX.Element => {
           password: '',
         }));
       })
-      .catch(() => {});
+      .catch((error) => console.error(error));
   };
 
   const handleCancel = (e: SyntheticEvent): void => {

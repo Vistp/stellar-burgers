@@ -9,7 +9,7 @@ export const ProfileOrders = (): React.JSX.Element => {
   const orders = useSelector(getUserOrders);
 
   useEffect(() => {
-    dispatch(loadUserOrdersThunk());
+    void dispatch(loadUserOrdersThunk());
   }, [dispatch]);
 
   return <ProfileOrdersUI orders={orders} />;
