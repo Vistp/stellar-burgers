@@ -10,12 +10,11 @@ export const Feed = (): React.JSX.Element => {
   const ordersData = useSelector(getFeedOrdersData);
 
   const handleGetFeeds = (): void => {
-    dispatch(loadFeedThunk());
+    void dispatch(loadFeedThunk());
   };
 
   useEffect(() => {
-    dispatch(loadFeedThunk())
-      .catch((error) => console.error(error));
+    void dispatch(loadFeedThunk());
   }, [dispatch]);
 
   if (!ordersData || !ordersData.orders.length) {
