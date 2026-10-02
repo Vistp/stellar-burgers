@@ -21,6 +21,11 @@ import { getIngredientsError, getIngredientsLoading, getIngredientsState, getIng
 import { authChecked, checkUserAuthThunk } from '@/services/slices/userSlice';
 import { ProtectedRoute } from '../protected-route/protected-route';
 
+interface LocationState {
+  /** Предыдущий маршрут, поверх которого открывается модальное окно */
+  background?: Location;
+}
+
 const App = (): React.JSX.Element => {
   const dispatch = useDispatch();
 
@@ -83,18 +88,16 @@ const AppContent = ({
 
 const RouteComponent = (): React.JSX.Element => {
   const location = useLocation();
+  const state = location.state as LocationState;
+  const background = state?.background;
 
-  const background = location.state && location.state.background;
-
-   return (
+  return (
     <>
       {/* Страницы */}
-      <Routes location={background || location}>
+      <Routes location={background ?? location}>
         <Route path="/" element={<ConstructorPage />} />
         <Route path="/feed" element={<Feed />} />
         <Route path="/feed/:number" element={<FeedOrderPage />} />
-        <Route path="/ingredients/:id" element={<IngredientDetails />} />
-
         <Route path="/ingredients/:id" element={<IngredientDetails />} />
 
         <Route path="/login" element={
@@ -151,29 +154,29 @@ const RouteComponent = (): React.JSX.Element => {
   );
 };
 
-const FeedOrderPage = () => {
+const FeedOrderPage = (): React.JSX.Element => {
   const { number } = useParams<{ number: string }>();
   return (
     <div className={styles.detailPageWrap}>
-        {`#${number ?? ''}`}
+      {`#${number ?? ''}`}
       <OrderInfo />
     </div>
   );
 };
 
-const ProfileOrderPage = () => {
+const ProfileOrderPage = (): React.JSX.Element => {
   const { number } = useParams<{ number: string }>();
   return (
     <ProtectedRoute>
       <div className={styles.detailPageWrap}>
-          {`#${number ?? ''}`}
+        {`#${number ?? ''}`}
         <OrderInfo />
       </div>
     </ProtectedRoute>
   );
 };
 
-const FeedOrderModal = () => {
+const FeedOrderModal = (): React.JSX.Element => {
   const { number } = useParams<{ number: string }>();
   return (
     <Modal title={`#${number ?? ''}`} onClose={() => window.history.back()}>
@@ -182,7 +185,7 @@ const FeedOrderModal = () => {
   );
 };
 
-const ProfileOrderModal = () => {
+const ProfileOrderModal = (): React.JSX.Element => {
   const { number } = useParams<{ number: string }>();
   return (
     <ProtectedRoute>
