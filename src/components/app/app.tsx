@@ -98,7 +98,7 @@ const RouteComponent = (): React.JSX.Element => {
         <Route path="/" element={<ConstructorPage />} />
         <Route path="/feed" element={<Feed />} />
         <Route path="/feed/:number" element={<FeedOrderPage />} />
-        <Route path="/ingredients/:id" element={<IngredientDetails />} />
+        <Route path="/ingredients/:id" element={<IngredientPage />} />
 
         <Route path="/login" element={
           <ProtectedRoute onlyGuests>
@@ -154,11 +154,22 @@ const RouteComponent = (): React.JSX.Element => {
   );
 };
 
+const IngredientPage = (): React.JSX.Element => (
+  <div className={styles.detailPageWrap}>
+    <h1 className={`${styles.detailHeader} text text_type_main-large`}>
+      Детали ингредиента
+    </h1>
+    <IngredientDetails />
+  </div>
+);
+
 const FeedOrderPage = (): React.JSX.Element => {
   const { number } = useParams<{ number: string }>();
   return (
     <div className={styles.detailPageWrap}>
-      {`#${number ?? ''}`}
+      <h1 className={`${styles.detailHeader} text text_type_digits-default`}>
+        {`#${number ?? ''}`}
+      </h1>
       <OrderInfo />
     </div>
   );
@@ -169,7 +180,9 @@ const ProfileOrderPage = (): React.JSX.Element => {
   return (
     <ProtectedRoute>
       <div className={styles.detailPageWrap}>
-        {`#${number ?? ''}`}
+        <h1 className={`${styles.detailHeader} text text_type_digits-default`}>
+          {`#${number ?? ''}`}
+        </h1>
         <OrderInfo />
       </div>
     </ProtectedRoute>
