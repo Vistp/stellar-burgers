@@ -13,7 +13,7 @@ export const ProfileUI = ({
   handleCancel,
   handleInputChange,
 }: ProfileUIProps): React.JSX.Element => (
-  <main className={styles.container}>
+   <main className={styles.container} style={{ maxWidth: '1240px', margin: '0 auto', width: '100%' }}>
     <div className={`mt-30 mr-15 ${styles.menu}`}>
       <ProfileMenu />
     </div>

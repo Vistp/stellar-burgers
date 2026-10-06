@@ -1,22 +1,38 @@
 import { Preloader, OrderInfoUI } from '@ui';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import type { TIngredient } from '@utils-types';
+import { useDispatch, useSelector } from '@/services/store';
+import { getIngredientsState } from '@/services/slices/ingredientsSlice';
+import { useParams } from 'react-router-dom';
+import { getUserOrders, loadUserOrdersThunk } from '@/services/slices/userSlice';
+import { getFeedOrdersData, loadFeedThunk } from '@/services/slices/feedSlice';
 
 export const OrderInfo = (): React.JSX.Element => {
-  /** TODO: взять переменные orderData и ingredients из стора */
-  const orderData = {
-    createdAt: '',
-    ingredients: [],
-    _id: '',
-    status: '',
-    name: '',
-    updatedAt: 'string',
-    number: 0,
-  };
+  const dispatch = useDispatch();
+  const { number } = useParams<{ number: string }>();
 
-  const ingredients: TIngredient[] = [];
+  const userOrders = useSelector(getUserOrders);
+  const ingredients = useSelector(getIngredientsState);
+  const feedData = useSelector(getFeedOrdersData);
 
+  const feedOrders = feedData?.orders ?? [];
+
+  const orderData = useMemo(() => {
+    const orders = [...feedOrders, ...userOrders];
+
+    return orders.find((item) => item.number === Number(number));
+  }, [feedOrders, userOrders, number]);
+
+
+  useEffect(() => {
+    if (!feedOrders.length) {
+      void dispatch(loadFeedThunk());
+    }
+    if (!userOrders.length && localStorage.getItem('refreshToken')) {
+      void dispatch(loadUserOrdersThunk());
+    }
+  }, [dispatch, feedOrders.length, userOrders.length]);
   /**
    * использование useMemo не обязательно
    */
