@@ -1,5 +1,6 @@
 import constructorReducer, {
   addIngredient,
+  clearOrderModal,
   moveIngredientDown,
   moveIngredientUp,
   removeIngredient
@@ -127,4 +128,23 @@ describe('Тестирование редьюсера слайса constructorSl
     expect(result.ingredients).toEqual([ingredient2, ingredient1]);
   });
 
+  test('проверяет очищение данных модалки заказа при экшене clearOrderModal', () => {
+    const order = {
+      _id: 'ord-123',
+      status: 'done',
+      name: 'Тестовый заказ',
+      createdAt: '2026-10-13T00:00:00.000Z',
+      updatedAt: '2026-10-13T00:00:00.000Z',
+      number: 111,
+      ingredients: ['bun-id-1', 'sauce-id-1']
+    };
+
+    const stateWithOrder = {
+      ...initialState,
+      orderModalData: order,
+    };
+    const result = constructorReducer(stateWithOrder, clearOrderModal());
+
+    expect(result.orderModalData).toBeNull();
+  });
 });
