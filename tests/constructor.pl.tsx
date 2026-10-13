@@ -35,10 +35,18 @@ test.beforeEach(async ({ page, context }) => {
 });
 
 test.describe('Страница конструктора', () => {
-  test('добавление булки в конструктор', async ({ page }) => {
+  test('добавление булки и ингредиента в конструктор', async ({ page }) => {
     await page.locator('*:has-text("Тестовая Булка 1")').getByRole('button').first().click();
 
-    await expect(page.getByText('Тестовая Булка 1').last()).toBeVisible()
+    await expect(page.getByText('Тестовая Булка 1').last()).toBeVisible();
+
+    const sauce = page.locator('*:has-text("Тестовый Соус 1")').first();
+    await sauce.scrollIntoViewIfNeeded();
+
+    await page.locator('*:has-text("Тестовый Соус 1")').getByRole('button', { name: 'Добавить' }).first().click();
+
+    await expect(page.getByText('Тестовая Булка 1').last()).toBeVisible();
+    await expect(page.getByText('Тестовый Соус 1').last()).toBeVisible();
   });
 
   test('открытие и закрытие модального окна ингредиента', async ({ page }) => {
