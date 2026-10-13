@@ -34,12 +34,7 @@ test.beforeEach(async ({ page, context }) => {
   await page.goto(BASE_URL);
 });
 
-// TODO: проверка, удалить
 test.describe('Страница конструктора', () => {
-  test('проверка доступа к странице', async ({ page }) => {
-    await expect(page).toHaveURL(BASE_URL);
-  });
-
   test('добавление булки в конструктор', async ({ page }) => {
     await page.locator('*:has-text("Тестовая Булка 1")').getByRole('button').first().click();
 
@@ -81,8 +76,4 @@ test.describe('Страница конструктора', () => {
 
     await expect(page.getByText('Выберите булки').first()).toBeVisible();
   });
-});
-
-test.describe('add ingredients to constructor works correctly', function () {
-
 });

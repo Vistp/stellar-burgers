@@ -147,4 +147,45 @@ describe('Тестирование редьюсера слайса constructorSl
 
     expect(result.orderModalData).toBeNull();
   });
+
+  test('проверяет экшен pending', () => {
+    const action = { type: 'constructor/orderBurger/pending' };
+    const result = constructorReducer(initialState, action);
+
+    expect(result.orderRequest).toBe(true);
+  });
+
+  test('проверяет экшен rejected', () => {
+    const action = { type: 'constructor/orderBurger/rejected' };
+    const result = constructorReducer({ ...initialState, orderRequest: true }, action);
+
+    expect(result.orderRequest).toBe(false);
+  });
+
+  test('проверяет экшен fulfilled', () => {
+    const order = {
+      _id: 'ord-123',
+      status: 'done',
+      name: 'Тестовый заказ',
+      createdAt: '2026-10-13T00:00:00.000Z',
+      updatedAt: '2026-10-13T00:00:00.000Z',
+      number: 111,
+      ingredients: ['bun-id-1', 'sauce-id-1']
+    };
+
+    const stateWithData = {
+      bun: { id: 'b1', _id: 'b1', name: 'Булка', type: 'bun', price: 10, proteins: 1, fat: 1, carbohydrates: 1, calories: 1, image: '', image_mobile: '', image_large: '' },
+      ingredients: [{ id: 's1', _id: 's1', name: 'Соус', type: 'sauce', price: 5, proteins: 1, fat: 1, carbohydrates: 1, calories: 1, image: '', image_mobile: '', image_large: '' }],
+      orderRequest: true,
+      orderModalData: null,
+    };
+
+    const action = { type: 'constructor/orderBurger/fulfilled', payload: order };
+    const result = constructorReducer(stateWithData, action);
+
+    expect(result.orderRequest).toBe(false);
+    expect(result.orderModalData).toEqual(order);
+    expect(result.bun).toBeNull();
+    expect(result.ingredients).toEqual([]);
+  });
 });
