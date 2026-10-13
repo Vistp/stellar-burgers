@@ -40,16 +40,20 @@ test.describe('Страница конструктора', () => {
     await expect(page).toHaveURL(BASE_URL);
   });
 
-   test('добавление булки в конструктор', async ({ page }) => {
+  test('добавление булки в конструктор', async ({ page }) => {
     await page.locator('*:has-text("Тестовая Булка 1")').getByRole('button').first().click();
 
     await expect(page.getByText('Тестовая Булка 1').last()).toBeVisible()
   });
 
-   test('открытие модального окна ингредиента', async ({ page }) => {
+  test('открытие и закрытие по крестику модального окна ингредиента', async ({ page }) => {
     await page.getByText('Тестовая Булка 1').first().click();
 
     await expect(page.locator('[class*="modal__modal"]').first()).toBeVisible();
+
+    await page.getByRole('button', { name: 'Закрыть' }).locator('svg').click();
+
+    await expect(page.locator('[class*="modal__modal"]')).not.toBeVisible();
   });
 });
 
