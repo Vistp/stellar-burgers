@@ -45,6 +45,12 @@ test.describe('Страница конструктора', () => {
 
     await expect(page.getByText('Тестовая Булка 1').last()).toBeVisible()
   });
+
+   test('открытие модального окна ингредиента', async ({ page }) => {
+    await page.getByText('Тестовая Булка 1').first().click();
+
+    await expect(page.locator('[class*="modal__modal"]').first()).toBeVisible();
+  });
 });
 
 test.describe('add ingredients to constructor works correctly', function () {
