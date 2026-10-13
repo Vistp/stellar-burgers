@@ -39,6 +39,12 @@ test.describe('Страница конструктора', () => {
   test('проверка доступа к странице', async ({ page }) => {
     await expect(page).toHaveURL(BASE_URL);
   });
+
+   test('добавление булки в конструктор', async ({ page }) => {
+    await page.locator('*:has-text("Тестовая Булка 1")').getByRole('button').first().click();
+
+    await expect(page.getByText('Тестовая Булка 1').last()).toBeVisible()
+  });
 });
 
 test.describe('add ingredients to constructor works correctly', function () {
