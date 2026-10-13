@@ -15,7 +15,7 @@ test.beforeEach(async ({ page, context }) => {
     window.localStorage.setItem('refreshToken', 'mock-refresh-token');
   });
 
-  await page.routeFromHAR('tests/ingredients.har', {
+  await page.routeFromHAR('tests/hars/ingredients.har', {
     url: '**/api/ingredients',
     update: false,
   });
