@@ -56,7 +56,7 @@ test.describe('Страница конструктора', () => {
     await expect(page.locator('[class*="modal__modal"]')).not.toBeVisible();
   });
 
-  test('оформление заказа', async ({ page }) => {
+  test('оформление заказа с последующим закрытием модального окна и очисткой конструктора', async ({ page }) => {
     await page.route('**/api/orders', async (route) => {
       await route.fulfill({
         status: 200,
@@ -75,10 +75,11 @@ test.describe('Страница конструктора', () => {
 
     await expect(page.getByText('111')).toBeVisible();
 
-
     await page.getByRole('button', { name: 'Закрыть' }).locator('svg').click();
 
     await expect(page.locator('[class*="modal__modal"]')).not.toBeVisible();
+
+    await expect(page.getByText('Выберите булки').first()).toBeVisible();
   });
 });
 
