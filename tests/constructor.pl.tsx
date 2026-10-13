@@ -55,6 +55,26 @@ test.describe('Страница конструктора', () => {
 
     await expect(page.locator('[class*="modal__modal"]')).not.toBeVisible();
   });
+
+  test('оформление заказа', async ({ page }) => {
+    await page.route('**/api/orders', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          success: true,
+          name: 'Space Burger',
+          order: { number: 10 }
+        }),
+      });
+    });
+
+    await page.locator('*:has-text("Тестовая Булка 1")').getByRole('button', { name: 'Добавить' }).first().click();
+
+    await page.getByRole('button', { name: 'Оформить заказ' }).click();
+
+    await expect(page.getByText('12345')).toBeVisible();
+  });
 });
 
 test.describe('add ingredients to constructor works correctly', function () {
