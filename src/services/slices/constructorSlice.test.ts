@@ -1,4 +1,4 @@
-import constructorReducer, { addIngredient } from './constructorSlice';
+import constructorReducer, { addIngredient, removeIngredient } from './constructorSlice';
 
 describe('Тестирование редьюсера слайса constructorSlice', () => {
   const initialState = {
@@ -55,4 +55,45 @@ describe('Тестирование редьюсера слайса constructorSl
     expect(result.bun).toBeNull();
     expect(result.ingredients).toEqual([ingredient]);
   });
+
+    test('проверяет удаление в экшене removeIngredient', () => {
+    const ingredient1 = {
+      id: 'id-to-remove',
+      _id: 's1',
+      name: 'Тестовая начинка 1',
+      type: 'sauce',
+      price: 50,
+      proteins: 5,
+      fat: 5,
+      carbohydrates: 5,
+      calories: 50,
+      image: 'https://yandex.net',
+      image_mobile: 'https://yandex.net',
+      image_large: 'https://yandex.net'
+    };
+
+    const ingredient2 = {
+      id: 'id-to-keep',
+      _id: 's2',
+      name: 'Тестовая начинка 2',
+      type: 'sauce',
+      price: 50,
+      proteins: 5,
+      fat: 5,
+      carbohydrates: 5,
+      calories: 50,
+      image: 'https://yandex.net',
+      image_mobile: 'https://yandex.net',
+      image_large: 'https://yandex.net'
+    };
+
+    const stateWithIngredients = {
+      ...initialState,
+      ingredients: [ingredient1, ingredient2],
+    };
+    const result = constructorReducer(stateWithIngredients, removeIngredient('id-to-remove'));
+
+    expect(result.ingredients).toEqual([ingredient2]);
+  });
+
 });
