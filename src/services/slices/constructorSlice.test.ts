@@ -1,4 +1,9 @@
-import constructorReducer, { addIngredient, removeIngredient } from './constructorSlice';
+import constructorReducer, {
+  addIngredient,
+  moveIngredientDown,
+  moveIngredientUp,
+  removeIngredient
+} from './constructorSlice';
 
 describe('Тестирование редьюсера слайса constructorSlice', () => {
   const initialState = {
@@ -94,6 +99,32 @@ describe('Тестирование редьюсера слайса constructorSl
     const result = constructorReducer(stateWithIngredients, removeIngredient('id-to-remove'));
 
     expect(result.ingredients).toEqual([ingredient2]);
+  });
+
+  test('проверяет пермещение ингредиента вверх при экшене moveIngredientUp', () => {
+    const ingredient1 = { id: 'id-1', _id: 's1', name: 'Соус 1', type: 'sauce', price: 50, proteins: 5, fat: 5, carbohydrates: 5, calories: 50, image: 'https://yandex.net', image_mobile: 'https://yandex.net', image_large: 'https://yandex.net' };
+    const ingredient2 = { id: 'id-2', _id: 's2', name: 'Соус 2', type: 'sauce', price: 50, proteins: 5, fat: 5, carbohydrates: 5, calories: 50, image: 'https://yandex.net', image_mobile: 'https://yandex.net', image_large: 'https://yandex.net' };
+
+    const stateBeforeMove = {
+      ...initialState,
+      ingredients: [ingredient2, ingredient1],
+    };
+    const result = constructorReducer(stateBeforeMove, moveIngredientUp(1));
+
+    expect(result.ingredients).toEqual([ingredient1, ingredient2]);
+  });
+
+  test('проверяет перемещение ингредиента вниз при экшене moveIngredientDown', () => {
+    const ingredient1 = { id: 'id-1', _id: 's1', name: 'Соус 1', type: 'sauce', price: 50, proteins: 5, fat: 5, carbohydrates: 5, calories: 50, image: 'https://yandex.net', image_mobile: 'https://yandex.net', image_large: 'https://yandex.net' };
+    const ingredient2 = { id: 'id-2', _id: 's2', name: 'Соус 2', type: 'sauce', price: 50, proteins: 5, fat: 5, carbohydrates: 5, calories: 50, image: 'https://yandex.net', image_mobile: 'https://yandex.net', image_large: 'https://yandex.net' };
+
+    const stateBeforeMove = {
+      ...initialState,
+      ingredients: [ingredient1, ingredient2],
+    };
+    const result = constructorReducer(stateBeforeMove, moveIngredientDown(0));
+
+    expect(result.ingredients).toEqual([ingredient2, ingredient1]);
   });
 
 });
