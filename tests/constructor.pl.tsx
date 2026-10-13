@@ -64,7 +64,7 @@ test.describe('Страница конструктора', () => {
         body: JSON.stringify({
           success: true,
           name: 'Space Burger',
-          order: { number: 10 }
+          order: { number: 111 }
         }),
       });
     });
@@ -73,7 +73,12 @@ test.describe('Страница конструктора', () => {
 
     await page.getByRole('button', { name: 'Оформить заказ' }).click();
 
-    await expect(page.getByText('12345')).toBeVisible();
+    await expect(page.getByText('111')).toBeVisible();
+
+
+    await page.getByRole('button', { name: 'Закрыть' }).locator('svg').click();
+
+    await expect(page.locator('[class*="modal__modal"]')).not.toBeVisible();
   });
 });
 
