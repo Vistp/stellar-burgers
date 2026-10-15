@@ -11,9 +11,16 @@ const BASE_URL = 'http://localhost:4000';
  */
 test.beforeEach(async ({ page, context }) => {
   await context.addInitScript(() => {
-    window.localStorage.setItem('accessToken', 'mock-access-token');
     window.localStorage.setItem('refreshToken', 'mock-refresh-token');
   });
+
+  await context.addCookies([
+    {
+      name: 'accessToken',
+      value: 'mock-access-token',
+      url: BASE_URL,
+    },
+  ]);
 
   await page.routeFromHAR('tests/hars/ingredients.har', {
     url: '**/api/ingredients',
