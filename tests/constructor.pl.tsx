@@ -33,7 +33,7 @@ test.beforeEach(async ({ page, context }) => {
       contentType: 'application/json',
       body: JSON.stringify({
         success: true,
-        user: { email: 'test@mail.ru', name: 'Пользователь' }
+        user: { email: 'test@mail.ru', name: 'Пользователь' },
       }),
     });
   });
@@ -43,38 +43,62 @@ test.beforeEach(async ({ page, context }) => {
 
 test.describe('Страница конструктора', () => {
   test('добавление булки и ингредиента в конструктор', async ({ page }) => {
-    await page.locator('*:has-text("Тестовая Булка 1")').getByRole('button').first().click();
+    await page
+      .locator('li[class*="container"]')
+      .filter({ hasText: 'Тестовая Булка 1' })
+      .getByRole('button')
+      .first()
+      .click();
 
-    await expect(page.getByText('Тестовая Булка 1').last()).toBeVisible();
+    const constructor = page.getByTestId('constructor');
+    await expect(constructor.getByText('Тестовая Булка 1 (верх)')).toBeVisible();
 
-    const sauce = page.locator('*:has-text("Тестовый Соус 1")').first();
+    const sauce = page
+      .locator('li[class*="container"]')
+      .filter({ hasText: 'Тестовый Соус 1' })
+      .first();
     await sauce.scrollIntoViewIfNeeded();
 
-    await page.locator('*:has-text("Тестовый Соус 1")').getByRole('button', { name: 'Добавить' }).first().click();
+    await page
+      .locator('li[class*="container"]')
+      .filter({ hasText: 'Тестовый Соус 1' })
+      .getByRole('button', { name: 'Добавить' })
+      .first()
+      .click();
 
-    await expect(page.getByText('Тестовая Булка 1').last()).toBeVisible();
-    await expect(page.getByText('Тестовый Соус 1').last()).toBeVisible();
+    await expect(constructor.getByText('Тестовая Булка 1 (верх)')).toBeVisible();
+    await expect(constructor.getByText('Тестовый Соус 1')).toBeVisible();
   });
 
   test('открытие и закрытие модального окна ингредиента', async ({ page }) => {
-    await page.getByText('Тестовая Булка 1').first().click();
+    const bun = page
+      .locator('li[class*="container"]')
+      .filter({ hasText: 'Тестовая Булка 1' });
+    await bun.getByText('Тестовая Булка 1').first().click();
 
-    await expect(page.locator('[class*="modal__modal"]').first()).toBeVisible();
+    const modal = page.locator('[class*="modal__modal"]').first();
+    await expect(modal).toBeVisible();
+
+    await expect(modal.getByText('Тестовая Булка 1')).toBeVisible();
 
     await page.getByRole('button', { name: 'Закрыть' }).locator('svg').click();
 
-    await expect(page.locator('[class*="modal__modal"]')).not.toBeVisible();
+    await expect(modal).not.toBeVisible();
 
-    await page.getByText('Тестовая Булка 1').first().click();
+    await bun.getByText('Тестовая Булка 1').first().click();
 
-    await expect(page.locator('[class*="modal__modal"]')).toBeVisible();
+    await expect(modal).toBeVisible();
 
-    await page.getByTestId('modal-overlay').click({ position: { x: 5, y: 5 }, force: true });
+    await page
+      .getByTestId('modal-overlay')
+      .click({ position: { x: 5, y: 5 }, force: true });
 
-    await expect(page.locator('[class*="modal__modal"]')).not.toBeVisible();
+    await expect(modal).not.toBeVisible();
   });
 
-  test('оформление заказа с последующим закрытием модального окна и очисткой конструктора', async ({ page }) => {
+  test('оформление заказа с последующим закрытием модального окна и очисткой конструктора', async ({
+    page,
+  }) => {
     await page.route('**/api/orders', async (route) => {
       await route.fulfill({
         status: 200,
@@ -82,12 +106,17 @@ test.describe('Страница конструктора', () => {
         body: JSON.stringify({
           success: true,
           name: 'Space Burger',
-          order: { number: 111 }
+          order: { number: 111 },
         }),
       });
     });
 
-    await page.locator('*:has-text("Тестовая Булка 1")').getByRole('button', { name: 'Добавить' }).first().click();
+    await page
+      .locator('li[class*="container"]')
+      .filter({ hasText: 'Тестовая Булка 1' })
+      .getByRole('button')
+      .first()
+      .click();
 
     await page.getByRole('button', { name: 'Оформить заказ' }).click();
 
@@ -97,6 +126,7 @@ test.describe('Страница конструктора', () => {
 
     await expect(page.locator('[class*="modal__modal"]')).not.toBeVisible();
 
-    await expect(page.getByText('Выберите булки').first()).toBeVisible();
+    const constructor = page.getByTestId('constructor');
+    await expect(constructor.getByText('Выберите булки').first()).toBeVisible();
   });
 });
