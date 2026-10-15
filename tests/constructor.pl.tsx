@@ -85,9 +85,14 @@ test.describe('Страница конструктора', () => {
 
     await expect(modal).not.toBeVisible();
 
-    await bun.getByText('Тестовая Булка 1').first().click();
+    const sauce = page
+      .locator('li[class*="container"]')
+      .filter({ hasText: 'Тестовый Соус 1' });
+    await sauce.getByText('Тестовый Соус 1').first().click();
 
     await expect(modal).toBeVisible();
+
+    await expect(modal.getByText('Тестовый Соус 1')).toBeVisible();
 
     await page
       .getByTestId('modal-overlay')
@@ -118,15 +123,32 @@ test.describe('Страница конструктора', () => {
       .first()
       .click();
 
+    const sauce = page
+      .locator('li[class*="container"]')
+      .filter({ hasText: 'Тестовый Соус 1' })
+      .first();
+    await sauce.scrollIntoViewIfNeeded();
+    await page
+      .locator('li[class*="container"]')
+      .filter({ hasText: 'Тестовый Соус 1' })
+      .getByRole('button', { name: 'Добавить' })
+      .first()
+      .click();
+
     await page.getByRole('button', { name: 'Оформить заказ' }).click();
 
-    await expect(page.getByText('111')).toBeVisible();
+    await expect(page.getByTestId('order-number')).toHaveText('111');
+
+    const constructorZone = page.getByTestId('constructor');
+    await expect(constructorZone.getByText('Выберите булки').first()).toBeVisible();
+    await expect(constructorZone.getByText('Выберите начинку').first()).toBeVisible();
+    await expect(constructorZone.getByText('Тестовая Булка 1 (верх)')).not.toBeVisible();
+    await expect(constructorZone.getByText('Тестовый Соус 1')).not.toBeVisible();
 
     await page.getByRole('button', { name: 'Закрыть' }).locator('svg').click();
 
     await expect(page.locator('[class*="modal__modal"]')).not.toBeVisible();
 
-    const constructor = page.getByTestId('constructor');
-    await expect(constructor.getByText('Выберите булки').first()).toBeVisible();
+    await expect(page.getByText('Выберите булки').first()).toBeVisible();
   });
 });
