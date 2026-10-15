@@ -3,7 +3,8 @@ import constructorReducer, {
   clearOrderModal,
   moveIngredientDown,
   moveIngredientUp,
-  removeIngredient
+  orderBurgerThunk,
+  removeIngredient,
 } from './constructorSlice';
 
 describe('Тестирование редьюсера слайса constructorSlice', () => {
@@ -20,8 +21,8 @@ describe('Тестирование редьюсера слайса constructorSl
     expect(result).toEqual(initialState);
   });
 
-   test('проверяет добавление булки в экшене addIngredient', () => {
-   const bun = {
+  test('проверяет добавление булки в экшене addIngredient', () => {
+    const bun = {
       id: 'bun-1',
       _id: 'b1',
       name: 'Тестовая булка',
@@ -33,7 +34,7 @@ describe('Тестирование редьюсера слайса constructorSl
       calories: 100,
       image: 'https://yandex.net',
       image_mobile: 'https://yandex.net',
-      image_large: 'https://yandex.net'
+      image_large: 'https://yandex.net',
     };
     const result = constructorReducer(initialState, addIngredient(bun));
 
@@ -54,7 +55,7 @@ describe('Тестирование редьюсера слайса constructorSl
       calories: 50,
       image: 'https://yandex.net',
       image_mobile: 'https://yandex.net',
-      image_large: 'https://yandex.net'
+      image_large: 'https://yandex.net',
     };
     const result = constructorReducer(initialState, addIngredient(ingredient));
 
@@ -62,7 +63,7 @@ describe('Тестирование редьюсера слайса constructorSl
     expect(result.ingredients).toEqual([ingredient]);
   });
 
-    test('проверяет удаление в экшене removeIngredient', () => {
+  test('проверяет удаление в экшене removeIngredient', () => {
     const ingredient1 = {
       id: 'id-to-remove',
       _id: 's1',
@@ -75,7 +76,7 @@ describe('Тестирование редьюсера слайса constructorSl
       calories: 50,
       image: 'https://yandex.net',
       image_mobile: 'https://yandex.net',
-      image_large: 'https://yandex.net'
+      image_large: 'https://yandex.net',
     };
 
     const ingredient2 = {
@@ -90,21 +91,50 @@ describe('Тестирование редьюсера слайса constructorSl
       calories: 50,
       image: 'https://yandex.net',
       image_mobile: 'https://yandex.net',
-      image_large: 'https://yandex.net'
+      image_large: 'https://yandex.net',
     };
 
     const stateWithIngredients = {
       ...initialState,
       ingredients: [ingredient1, ingredient2],
     };
-    const result = constructorReducer(stateWithIngredients, removeIngredient('id-to-remove'));
+    const result = constructorReducer(
+      stateWithIngredients,
+      removeIngredient('id-to-remove')
+    );
 
     expect(result.ingredients).toEqual([ingredient2]);
   });
 
   test('проверяет пермещение ингредиента вверх при экшене moveIngredientUp', () => {
-    const ingredient1 = { id: 'id-1', _id: 's1', name: 'Соус 1', type: 'sauce', price: 50, proteins: 5, fat: 5, carbohydrates: 5, calories: 50, image: 'https://yandex.net', image_mobile: 'https://yandex.net', image_large: 'https://yandex.net' };
-    const ingredient2 = { id: 'id-2', _id: 's2', name: 'Соус 2', type: 'sauce', price: 50, proteins: 5, fat: 5, carbohydrates: 5, calories: 50, image: 'https://yandex.net', image_mobile: 'https://yandex.net', image_large: 'https://yandex.net' };
+    const ingredient1 = {
+      id: 'id-1',
+      _id: 's1',
+      name: 'Соус 1',
+      type: 'sauce',
+      price: 50,
+      proteins: 5,
+      fat: 5,
+      carbohydrates: 5,
+      calories: 50,
+      image: 'https://yandex.net',
+      image_mobile: 'https://yandex.net',
+      image_large: 'https://yandex.net',
+    };
+    const ingredient2 = {
+      id: 'id-2',
+      _id: 's2',
+      name: 'Соус 2',
+      type: 'sauce',
+      price: 50,
+      proteins: 5,
+      fat: 5,
+      carbohydrates: 5,
+      calories: 50,
+      image: 'https://yandex.net',
+      image_mobile: 'https://yandex.net',
+      image_large: 'https://yandex.net',
+    };
 
     const stateBeforeMove = {
       ...initialState,
@@ -116,8 +146,34 @@ describe('Тестирование редьюсера слайса constructorSl
   });
 
   test('проверяет перемещение ингредиента вниз при экшене moveIngredientDown', () => {
-    const ingredient1 = { id: 'id-1', _id: 's1', name: 'Соус 1', type: 'sauce', price: 50, proteins: 5, fat: 5, carbohydrates: 5, calories: 50, image: 'https://yandex.net', image_mobile: 'https://yandex.net', image_large: 'https://yandex.net' };
-    const ingredient2 = { id: 'id-2', _id: 's2', name: 'Соус 2', type: 'sauce', price: 50, proteins: 5, fat: 5, carbohydrates: 5, calories: 50, image: 'https://yandex.net', image_mobile: 'https://yandex.net', image_large: 'https://yandex.net' };
+    const ingredient1 = {
+      id: 'id-1',
+      _id: 's1',
+      name: 'Соус 1',
+      type: 'sauce',
+      price: 50,
+      proteins: 5,
+      fat: 5,
+      carbohydrates: 5,
+      calories: 50,
+      image: 'https://yandex.net',
+      image_mobile: 'https://yandex.net',
+      image_large: 'https://yandex.net',
+    };
+    const ingredient2 = {
+      id: 'id-2',
+      _id: 's2',
+      name: 'Соус 2',
+      type: 'sauce',
+      price: 50,
+      proteins: 5,
+      fat: 5,
+      carbohydrates: 5,
+      calories: 50,
+      image: 'https://yandex.net',
+      image_mobile: 'https://yandex.net',
+      image_large: 'https://yandex.net',
+    };
 
     const stateBeforeMove = {
       ...initialState,
@@ -136,7 +192,7 @@ describe('Тестирование редьюсера слайса constructorSl
       createdAt: '2026-10-13T00:00:00.000Z',
       updatedAt: '2026-10-13T00:00:00.000Z',
       number: 111,
-      ingredients: ['bun-id-1', 'sauce-id-1']
+      ingredients: ['bun-id-1', 'sauce-id-1'],
     };
 
     const stateWithOrder = {
@@ -149,14 +205,17 @@ describe('Тестирование редьюсера слайса constructorSl
   });
 
   test('проверяет экшен pending', () => {
-    const action = { type: 'constructor/orderBurger/pending' };
+    const action = orderBurgerThunk.pending('requestId', ['bun-id-1', 'sauce-id-1']);
     const result = constructorReducer(initialState, action);
 
     expect(result.orderRequest).toBe(true);
   });
 
   test('проверяет экшен rejected', () => {
-    const action = { type: 'constructor/orderBurger/rejected' };
+    const action = orderBurgerThunk.rejected(new Error('Ошибка'), 'requestId', [
+      'bun-id-1',
+      'sauce-id-1',
+    ]);
     const result = constructorReducer({ ...initialState, orderRequest: true }, action);
 
     expect(result.orderRequest).toBe(false);
@@ -170,17 +229,48 @@ describe('Тестирование редьюсера слайса constructorSl
       createdAt: '2026-10-13T00:00:00.000Z',
       updatedAt: '2026-10-13T00:00:00.000Z',
       number: 111,
-      ingredients: ['bun-id-1', 'sauce-id-1']
+      ingredients: ['bun-id-1', 'sauce-id-1'],
     };
 
     const stateWithData = {
-      bun: { id: 'b1', _id: 'b1', name: 'Булка', type: 'bun', price: 10, proteins: 1, fat: 1, carbohydrates: 1, calories: 1, image: '', image_mobile: '', image_large: '' },
-      ingredients: [{ id: 's1', _id: 's1', name: 'Соус', type: 'sauce', price: 5, proteins: 1, fat: 1, carbohydrates: 1, calories: 1, image: '', image_mobile: '', image_large: '' }],
+      bun: {
+        id: 'b1',
+        _id: 'b1',
+        name: 'Булка',
+        type: 'bun',
+        price: 10,
+        proteins: 1,
+        fat: 1,
+        carbohydrates: 1,
+        calories: 1,
+        image: '',
+        image_mobile: '',
+        image_large: '',
+      },
+      ingredients: [
+        {
+          id: 's1',
+          _id: 's1',
+          name: 'Соус',
+          type: 'sauce',
+          price: 5,
+          proteins: 1,
+          fat: 1,
+          carbohydrates: 1,
+          calories: 1,
+          image: '',
+          image_mobile: '',
+          image_large: '',
+        },
+      ],
       orderRequest: true,
       orderModalData: null,
     };
 
-    const action = { type: 'constructor/orderBurger/fulfilled', payload: order };
+    const action = orderBurgerThunk.fulfilled(order, 'requestId', [
+      'bun-id-1',
+      'sauce-id-1',
+    ]);
     const result = constructorReducer(stateWithData, action);
 
     expect(result.orderRequest).toBe(false);
