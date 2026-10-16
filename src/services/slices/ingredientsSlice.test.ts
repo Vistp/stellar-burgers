@@ -1,5 +1,5 @@
 import { TIngredient } from '@/utils/types';
-import ingredientsReducer, { getIngredientsThunk } from './ingredientsSlice';
+import ingredientsReducer, { getIngredientsThunk, IngredientsState } from './ingredientsSlice';
 
 describe('Тестирование редьюсера слайса ingredientsSlice', () => {
   const initialState = {
@@ -15,14 +15,17 @@ describe('Тестирование редьюсера слайса ingredientsSl
   });
 
   test('проверяет экшен pending', () => {
-    const action = getIngredientsThunk.pending('requestId');
-    const result = ingredientsReducer(initialState, action);
+    const previousState: IngredientsState = {
+      ...initialState,
+      isLoading: false,
+      error: 'Предыдущая ошибка',
+    };
 
-    expect(result).toEqual({
-      ingredients: [],
-      isLoading: true,
-      error: null,
-    });
+    const action = getIngredientsThunk.pending('requestId');
+    const result = ingredientsReducer(previousState, action);
+
+    expect(result.isLoading).toBe(true);
+    expect(result.error).toBeNull();
   });
 
   test('проверяет экшен rejected', () => {
