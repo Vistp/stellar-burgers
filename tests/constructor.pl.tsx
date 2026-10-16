@@ -27,15 +27,14 @@ test.beforeEach(async ({ page, context }) => {
     update: false,
   });
 
-  await page.route('**/api/auth/user', async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify({
-        success: true,
-        user: { email: 'test@mail.ru', name: 'Пользователь' },
-      }),
-    });
+  await page.routeFromHAR('tests/hars/user.har', {
+    url: '**/api/auth/user',
+    update: false,
+  });
+
+  await page.routeFromHAR('tests/hars/order.har', {
+    url: '**/api/orders',
+    update: false,
   });
 
   await page.goto(BASE_URL);
@@ -45,41 +44,41 @@ test.describe('Страница конструктора', () => {
   test('добавление булки и ингредиента в конструктор', async ({ page }) => {
     await page
       .locator('li[class*="container"]')
-      .filter({ hasText: 'Тестовая Булка 1' })
+      .filter({ hasText: 'Краторная булка N-200i' })
       .getByRole('button')
       .first()
       .click();
 
     const constructor = page.getByTestId('constructor');
-    await expect(constructor.getByText('Тестовая Булка 1 (верх)')).toBeVisible();
+    await expect(constructor.getByText('Краторная булка N-200i (верх)')).toBeVisible();
 
     const sauce = page
       .locator('li[class*="container"]')
-      .filter({ hasText: 'Тестовый Соус 1' })
+      .filter({ hasText: 'Соус Spicy-X' })
       .first();
     await sauce.scrollIntoViewIfNeeded();
 
     await page
       .locator('li[class*="container"]')
-      .filter({ hasText: 'Тестовый Соус 1' })
+      .filter({ hasText: 'Соус Spicy-X' })
       .getByRole('button', { name: 'Добавить' })
       .first()
       .click();
 
-    await expect(constructor.getByText('Тестовая Булка 1 (верх)')).toBeVisible();
-    await expect(constructor.getByText('Тестовый Соус 1')).toBeVisible();
+    await expect(constructor.getByText('Краторная булка N-200i (верх)')).toBeVisible();
+    await expect(constructor.getByText('Соус Spicy-X')).toBeVisible();
   });
 
   test('открытие и закрытие модального окна ингредиента', async ({ page }) => {
     const bun = page
       .locator('li[class*="container"]')
-      .filter({ hasText: 'Тестовая Булка 1' });
-    await bun.getByText('Тестовая Булка 1').first().click();
+      .filter({ hasText: 'Краторная булка N-200i' });
+    await bun.getByText('Краторная булка N-200i').first().click();
 
     const modal = page.locator('[class*="modal__modal"]').first();
     await expect(modal).toBeVisible();
 
-    await expect(modal.getByText('Тестовая Булка 1')).toBeVisible();
+    await expect(modal.getByText('Краторная булка N-200i')).toBeVisible();
 
     await page.getByRole('button', { name: 'Закрыть' }).locator('svg').click();
 
@@ -87,12 +86,12 @@ test.describe('Страница конструктора', () => {
 
     const sauce = page
       .locator('li[class*="container"]')
-      .filter({ hasText: 'Тестовый Соус 1' });
-    await sauce.getByText('Тестовый Соус 1').first().click();
+      .filter({ hasText: 'Соус Spicy-X' });
+    await sauce.getByText('Соус Spicy-X').first().click();
 
     await expect(modal).toBeVisible();
 
-    await expect(modal.getByText('Тестовый Соус 1')).toBeVisible();
+    await expect(modal.getByText('Соус Spicy-X')).toBeVisible();
 
     await page
       .getByTestId('modal-overlay')
@@ -104,33 +103,21 @@ test.describe('Страница конструктора', () => {
   test('оформление заказа с последующим закрытием модального окна и очисткой конструктора', async ({
     page,
   }) => {
-    await page.route('**/api/orders', async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: true,
-          name: 'Space Burger',
-          order: { number: 111 },
-        }),
-      });
-    });
-
     await page
       .locator('li[class*="container"]')
-      .filter({ hasText: 'Тестовая Булка 1' })
+      .filter({ hasText: 'Краторная булка N-200i' })
       .getByRole('button')
       .first()
       .click();
 
     const sauce = page
       .locator('li[class*="container"]')
-      .filter({ hasText: 'Тестовый Соус 1' })
+      .filter({ hasText: 'Соус Spicy-X' })
       .first();
     await sauce.scrollIntoViewIfNeeded();
     await page
       .locator('li[class*="container"]')
-      .filter({ hasText: 'Тестовый Соус 1' })
+      .filter({ hasText: 'Соус Spicy-X' })
       .getByRole('button', { name: 'Добавить' })
       .first()
       .click();
@@ -142,8 +129,8 @@ test.describe('Страница конструктора', () => {
     const constructorZone = page.getByTestId('constructor');
     await expect(constructorZone.getByText('Выберите булки').first()).toBeVisible();
     await expect(constructorZone.getByText('Выберите начинку').first()).toBeVisible();
-    await expect(constructorZone.getByText('Тестовая Булка 1 (верх)')).not.toBeVisible();
-    await expect(constructorZone.getByText('Тестовый Соус 1')).not.toBeVisible();
+    await expect(constructorZone.getByText('Краторная булка N-200i (верх)')).not.toBeVisible();
+    await expect(constructorZone.getByText('Соус Spicy-X')).not.toBeVisible();
 
     await page.getByRole('button', { name: 'Закрыть' }).locator('svg').click();
 
